@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ColecaoApp.Api/ColecaoApp.Api.csproj" />
+    <Project Path="src/ColecaoApp.Application/ColecaoApp.Application.csproj" />
+    <Project Path="src/ColecaoApp.Domain/ColecaoApp.Domain.csproj" />
+    <Project Path="src/ColecaoApp.Infrastructure/ColecaoApp.Infrastructure.csproj" />
+  </Folder>
+</Solution>
