@@ -11,6 +11,6 @@ public record CriarCamisaDto(
     VersaoCamisa Versao,
     int? Numero,
     string? NomeJogador,
-    bool IsAutograda,
+    bool IsAutografada,
     string? FotoUrl
 );
