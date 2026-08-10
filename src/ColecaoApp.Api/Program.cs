@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client.Extensibility;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
+using FluentValidation;
+using ColecaoApp.Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,30 +44,37 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddValidatorsFromAssemblyContaining<CriarCamisaDtoValidator>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Coleção App API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ColecaoApp API", Version = "v1" });
 
-    var jwtSecurityScheme = new OpenApiSecurityScheme
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        BearerFormat = "JWT",
         Name = "Authorization",
+        Description = "Insira apenas o seu token JWT no campo abaixo:",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
         Scheme = "bearer",
-        Description = "Insira apenas o seu token JWT no campo abaixo:"
-    };
+        BearerFormat = "JWT"
+    });
 
-    c.AddSecurityDefinition("Bearer", jwtSecurityScheme);
-
-    var securitySchemeReference = new OpenApiSecuritySchemeReference("Bearer");
-
-    c.AddSecurityRequirement(_ => new OpenApiSecurityRequirement
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
-        { securitySchemeReference, new List<string>() }
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new List<string>()
+        }
     });
 });
 

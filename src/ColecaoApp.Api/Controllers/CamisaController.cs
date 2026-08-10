@@ -2,6 +2,7 @@ using System.Security.Claims;
 using ColecaoApp.Application.DTOs.Camisas;
 using ColecaoApp.Application.Interfaces;
 using ColecaoApp.Domain.Entities;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,10 +14,12 @@ namespace ColecaoApp.Api.Controllers;
 public class CamisaController : ControllerBase
 {
     private readonly ICamisaRepository _camisaRepository;
+    private readonly IValidator<CriarCamisaDto> _validator;
 
-    public CamisaController(ICamisaRepository camisaRepository)
+    public CamisaController(ICamisaRepository camisaRepository, IValidator<CriarCamisaDto> validator)
     {
         _camisaRepository = camisaRepository;
+        _validator = validator;
     }
 
     private int ObterUsuarioIdDoToken()
@@ -52,6 +55,10 @@ public class CamisaController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Criar([FromBody] CriarCamisaDto dto)
     {
+        var validationResult = await _validator.ValidateAsync(dto);
+        if (!validationResult.IsValid)
+            return BadRequest(validationResult.ToDictionary());
+        
         var usuarioId = ObterUsuarioIdDoToken();
 
         var camisa = new Camisa
@@ -77,6 +84,10 @@ public class CamisaController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Atualizar(int id, [FromBody] CriarCamisaDto dto)
     {
+        var validationResult = await _validator.ValidateAsync(dto);
+        if (!validationResult.IsValid)
+            return BadRequest(validationResult.ToDictionary());
+        
         var usuarioId = ObterUsuarioIdDoToken();
         var camisaExistente = await _camisaRepository.ObterPorIdAsync(id);
 
