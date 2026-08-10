@@ -14,5 +14,7 @@ public record CamisaResponseDto(
     string? NomeJogador,
     bool IsAutograda,
     string? FotoUrl,
-    int UsuarioId
+    int UsuarioId,
+    string Categoria,
+    bool IsSelecao
 );

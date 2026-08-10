@@ -46,7 +46,9 @@ public class CamisaController : ControllerBase
             c.NomeJogador,
             c.IsAutografada,
             c.FotoUrl,
-            c.UsuarioId
+            c.UsuarioId,
+            c.Categoria,
+            c.IsSelecao
         ));
 
         return Ok(response);
@@ -73,6 +75,8 @@ public class CamisaController : ControllerBase
             NomeJogador = dto.NomeJogador,
             IsAutografada = dto.IsAutografada,
             FotoUrl = dto.FotoUrl,
+            Categoria = dto.Categoria,
+            IsSelecao = dto.IsSelecao,
             UsuarioId = usuarioId
         };
 
@@ -103,6 +107,8 @@ public class CamisaController : ControllerBase
         camisaExistente.Numero = dto.Numero;
         camisaExistente.NomeJogador = dto.NomeJogador;
         camisaExistente.IsAutografada = dto.IsAutografada;
+        camisaExistente.Categoria = dto.Categoria;
+        camisaExistente.IsSelecao = dto.IsSelecao;
         camisaExistente.FotoUrl = dto.FotoUrl;
 
         await _camisaRepository.AtualizarAsync(camisaExistente);

@@ -50,5 +50,9 @@ public class CriarCamisaDtoValidator : AbstractValidator<CriarCamisaDto>
                 .Must(uri => Uri.TryCreate(uri, UriKind.Absolute, out _))
                 .WithMessage("A URL da foto deve ser um endereço de URL válido.");
         });
+
+        RuleFor(x => x.Categoria)
+            .NotEmpty().WithMessage("A categoria (liga ou continente) é obrigatória.")
+            .MaximumLength(50).WithMessage("A categoria deve ter no máximo 50 caracteres.");
     }
 }

@@ -11,6 +11,8 @@ export interface Camisa {
   isAutografada: boolean;
   fotoUrl: string;
   usuarioId: number;
+  isSelecao?: boolean; 
+  categoria?: string;
 }
 
 export interface AuthResponse {
