@@ -3,6 +3,7 @@ import { Folder, ArrowLeft, Shirt, LogOut, Plus } from 'lucide-react';
 import { api } from '../services/api';
 import type { Camisa } from '../types/camisa';
 import { ModalNovaCamisa } from './ModalNovaCamisa';
+import { ModalDetalhesCamisa } from './ModalDetalhesCamisa';
 
 interface DesktopProps {
   onLogout: () => void;
@@ -11,8 +12,12 @@ interface DesktopProps {
 export const Desktop: React.FC<DesktopProps> = ({ onLogout }) => {
   const [camisas, setCamisas] = useState<Camisa[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Controle de Modais
+  const [isModalNovaOpen, setIsModalNovaOpen] = useState(false);
   const [modalIsSelecao, setModalIsSelecao] = useState(false);
+  const [selectedCamisa, setSelectedCamisa] = useState<Camisa | null>(null);
+  const [isModalDetalhesOpen, setIsModalDetalhesOpen] = useState(false);
 
   const [currentPath, setCurrentPath] = useState<string[]>([]);
 
@@ -33,7 +38,12 @@ export const Desktop: React.FC<DesktopProps> = ({ onLogout }) => {
 
   const abrirModalCadastro = (isSelecao: boolean) => {
     setModalIsSelecao(isSelecao);
-    setIsModalOpen(true);
+    setIsModalNovaOpen(true);
+  };
+
+  const abrirModalDetalhes = (camisa: Camisa) => {
+    setSelectedCamisa(camisa);
+    setIsModalDetalhesOpen(true);
   };
 
   const obterNomeUsuario = (): string => {
@@ -101,10 +111,9 @@ export const Desktop: React.FC<DesktopProps> = ({ onLogout }) => {
     <div className="min-h-screen bg-neutral-900 text-white p-8 font-sans">
       <Header />
 
-      {/* NÍVEL 0: Área de Trabalho (Times / Seleções) com Botões de Mais */}
+      {/* NÍVEL 0: Área de Trabalho (Times / Seleções) */}
       {currentPath.length === 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
-          {/* Pasta Times */}
           <div className="flex items-center bg-neutral-800/40 border border-neutral-800 rounded-2xl p-4 hover:border-neutral-700 transition">
             <button
               onClick={() => openFolder('Times')}
@@ -125,7 +134,6 @@ export const Desktop: React.FC<DesktopProps> = ({ onLogout }) => {
             </button>
           </div>
 
-          {/* Pasta Seleções */}
           <div className="flex items-center bg-neutral-800/40 border border-neutral-800 rounded-2xl p-4 hover:border-neutral-700 transition">
             <button
               onClick={() => openFolder('Selecoes')}
@@ -219,7 +227,8 @@ export const Desktop: React.FC<DesktopProps> = ({ onLogout }) => {
             {camisasDoTime.map((camisa) => (
               <div
                 key={camisa.id}
-                className="flex flex-col items-center p-4 bg-neutral-800/50 border border-neutral-700/50 rounded-xl hover:border-neutral-500 transition group cursor-pointer"
+                onClick={() => abrirModalDetalhes(camisa)}
+                className="flex flex-col items-center p-4 bg-neutral-800/50 border border-neutral-700/50 rounded-xl hover:border-neutral-500 transition group cursor-pointer relative"
               >
                 <div className="w-full h-36 bg-neutral-800 rounded-lg overflow-hidden flex items-center justify-center mb-3">
                   {camisa.fotoUrl ? (
@@ -244,10 +253,21 @@ export const Desktop: React.FC<DesktopProps> = ({ onLogout }) => {
 
       {/* Modal de Cadastro */}
       <ModalNovaCamisa
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isModalNovaOpen}
+        onClose={() => setIsModalNovaOpen(false)}
         onSuccess={carregarCamisas}
         initialIsSelecao={modalIsSelecao}
+      />
+
+      {/* Modal de Detalhes / Edição / Exclusão */}
+      <ModalDetalhesCamisa
+        camisa={selectedCamisa}
+        isOpen={isModalDetalhesOpen}
+        onClose={() => {
+          setIsModalDetalhesOpen(false);
+          setSelectedCamisa(null);
+        }}
+        onSuccess={carregarCamisas}
       />
     </div>
   );
