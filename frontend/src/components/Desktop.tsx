@@ -4,6 +4,7 @@ import { api } from '../services/api';
 import type { Camisa } from '../types/camisa';
 import { ModalNovaCamisa } from './ModalNovaCamisa';
 import { ModalDetalhesCamisa } from './ModalDetalhesCamisa';
+import { FolderIcon } from './FolderIcon';
 
 interface DesktopProps {
   onLogout: () => void;
@@ -13,7 +14,7 @@ export const Desktop: React.FC<DesktopProps> = ({ onLogout }) => {
   const [camisas, setCamisas] = useState<Camisa[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Controle de Modais
+  // Modais
   const [isModalNovaOpen, setIsModalNovaOpen] = useState(false);
   const [modalIsSelecao, setModalIsSelecao] = useState(false);
   const [selectedCamisa, setSelectedCamisa] = useState<Camisa | null>(null);
@@ -111,7 +112,7 @@ export const Desktop: React.FC<DesktopProps> = ({ onLogout }) => {
     <div className="min-h-screen bg-neutral-900 text-white p-8 font-sans">
       <Header />
 
-      {/* NÍVEL 0: Área de Trabalho (Times / Seleções) */}
+      {/* NÍVEL 0: Área de Trabalho */}
       {currentPath.length === 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
           <div className="flex items-center bg-neutral-800/40 border border-neutral-800 rounded-2xl p-4 hover:border-neutral-700 transition">
@@ -156,7 +157,7 @@ export const Desktop: React.FC<DesktopProps> = ({ onLogout }) => {
         </div>
       )}
 
-      {/* NÍVEL 1: Categorias (Ligas ou Continentes) */}
+      {/* NÍVEL 1: Categorias com FolderIcon */}
       {currentPath.length === 1 && (() => {
         const isTimes = currentPath[0] === 'Times';
         const camisasFiltradas = camisas.filter((c) => (isTimes ? !c.isSelecao : c.isSelecao));
@@ -178,15 +179,15 @@ export const Desktop: React.FC<DesktopProps> = ({ onLogout }) => {
                 onClick={() => openFolder(cat)}
                 className="flex flex-col items-center p-4 rounded-lg hover:bg-neutral-800 transition cursor-pointer group"
               >
-                <Folder size={64} className="text-amber-400 fill-amber-400/20 group-hover:scale-105 transition" />
-                <span className="mt-2 text-sm font-medium">{cat}</span>
+                <FolderIcon name={cat} level={1} />
+                <span className="mt-3 text-sm font-medium">{cat}</span>
               </button>
             ))}
           </div>
         );
       })()}
 
-      {/* NÍVEL 2: Times ou Seleções da Categoria */}
+      {/* NÍVEL 2: Times / Seleções com FolderIcon (Bandeira ou Escudo) */}
       {currentPath.length === 2 && (() => {
         const categoriaAtual = currentPath[1];
         const camisasDaCategoria = camisas.filter(
@@ -205,17 +206,15 @@ export const Desktop: React.FC<DesktopProps> = ({ onLogout }) => {
                 onClick={() => openFolder(time)}
                 className="flex flex-col items-center p-4 rounded-lg hover:bg-neutral-800 transition cursor-pointer group"
               >
-                <div className="w-16 h-16 bg-neutral-800 border border-neutral-700 rounded-lg flex items-center justify-center group-hover:scale-105 transition mb-2">
-                  <Folder size={40} className="text-neutral-400" />
-                </div>
-                <span className="text-sm font-medium">{time}</span>
+                <FolderIcon name={time} level={2} />
+                <span className="mt-3 text-sm font-medium">{time}</span>
               </button>
             ))}
           </div>
         );
       })()}
 
-      {/* NÍVEL 3: Lista de Camisas do Time */}
+      {/* NÍVEL 3: Lista de Camisas */}
       {currentPath.length >= 3 && (() => {
         const timeAtual = currentPath[2];
         const camisasDoTime = camisas.filter(
@@ -251,7 +250,6 @@ export const Desktop: React.FC<DesktopProps> = ({ onLogout }) => {
         );
       })()}
 
-      {/* Modal de Cadastro */}
       <ModalNovaCamisa
         isOpen={isModalNovaOpen}
         onClose={() => setIsModalNovaOpen(false)}
@@ -259,7 +257,6 @@ export const Desktop: React.FC<DesktopProps> = ({ onLogout }) => {
         initialIsSelecao={modalIsSelecao}
       />
 
-      {/* Modal de Detalhes / Edição / Exclusão */}
       <ModalDetalhesCamisa
         camisa={selectedCamisa}
         isOpen={isModalDetalhesOpen}
