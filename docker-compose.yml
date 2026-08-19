@@ -2,11 +2,14 @@ services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: sqlserver
+    restart: unless-stopped
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
     ports:
       - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql 
     networks:
       - colecao-net
 
@@ -15,6 +18,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: colecao-app-container
+    restart: unless-stopped
     ports:
       - "8080:8080"
     environment:
@@ -25,6 +29,22 @@ services:
       - sqlserver
     networks:
       - colecao-net
+
+  colecao-web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: colecao-web-container
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - colecao-api
+    networks:
+      - colecao-net
+
+volumes:
+  mssql_data:
 
 networks:
   colecao-net:
