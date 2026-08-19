@@ -7,7 +7,7 @@
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Aplicação Fullstack robusta para gerenciamento estruturado de coleções e itens, implementando autenticação stateless via JWT, arquitetura desacoplada em microsserviços e conteinerização completa com Docker Compose.
+Aplicação Fullstack robusta para gerenciamento estruturado de coleções e itens, implementando autenticação stateless via JWT, Clean Architecture e conteinerização completa com Docker Compose.
 
 ---
 
