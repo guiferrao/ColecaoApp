@@ -30,6 +30,16 @@ services:
     networks:
       - colecao-net
 
+  tunnel:
+      image: cloudflare/cloudflared:latest
+      container_name: cloudflared_tunnel
+      restart: unless-stopped
+      command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+      depends_on:
+        - colecao-api
+      networks:
+        - colecao-net
+
   colecao-web:
     build:
       context: ./frontend
