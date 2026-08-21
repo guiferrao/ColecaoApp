@@ -41,7 +41,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
 
     try {
       if (modoCadastro) {
-        await api.post('/Auth/registrar', {
+        await api.post('/api/Auth/registrar', {
           nome,
           email,
           senha,
@@ -52,7 +52,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         setSenha('');
         setConfirmarSenha('');
       } else {
-        const response = await api.post<AuthResponse>('/Auth/login', {
+        const response = await api.post<AuthResponse>('/api/Auth/login', {
           email,
           senha,
         });
